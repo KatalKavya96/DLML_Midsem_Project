@@ -1,5 +1,7 @@
 # Bineet Keshari - module review register
 
+> Coordinator correction (2026-10-27, branch `kavya`): explanatory claims below were reconciled with the source code, measured tables and training profiles. Original agent/environment/check records remain historical self-reports; this edit does not certify student understanding.
+
 Package prepared: 2026-10-27. Role: Baselines, shared estimator implementation and error analysis.
 Status: **integrated and agent-reviewed; member understanding/reproduction pending**. No individual implementation or completion is claimed.
 
@@ -31,7 +33,7 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Bineet Keshari under
   3. `HistoricalAverage`:
      Baseline M1: Fits an empirical weekly diurnal speed profile table strictly on training steps (`values[:train_end]`, `index[:train_end]`). Computes per-sensor mean speed for each of the 2,016 weekly slots. Robust fallback chain: if a weekly slot has no observations in training for a sensor, it falls back to that sensor's time-of-day mean (288 daily slots), and if still unobserved, to the sensor's global training mean. Predicts arbitrary horizon intervals via table lookup at target slot offsets (`self.table_[tow[target_steps]]`).
 - `src/trafficml/models/trees.py`:
-  Implements the shared independent-sensor tree models with explicit missing-target handling rules. Owned by Bineet; shared tree/XGBoost orchestration reviewed with Kavya.
+  Implements the shared independent-sensor tree models with explicit missing-target handling rules. Owned by Bineet; Shared tree/XGBoost orchestration is assigned to Kavya for integration review.
   `fit_predict_sensor(kind, x_train, y_train, x_eval, fallback, params, seed=42, min_rows=100, importance=False, model_dir=None)`:
   1. Strict target isolation: Never inspects evaluation targets; validation/test targets are never passed into fitting.
   2. Multi-horizon Random Forest (`kind="rf"`):
@@ -42,7 +44,7 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Bineet Keshari under
   Empty package marker for `trafficml.models`.
 - `scripts/run_baselines.py`:
   Standalone CLI runner to evaluate M0 (Persistence) and M1 (Historical Average) into a traceable run directory (`--run-dir`, default `results/runs/correction-v1`).
-  Includes `fit_training_profile(values, index, splits, horizon)` which asserts strict training boundary purging: `train_end = int(splits.train[-1] + horizon + 1)` and checks `train_end - 1 <= splits.val_tune[0]`, raising a `ValueError` if the fit window touches the first validation anchor.
+  Includes `fit_training_profile(values, index, splits, horizon)` which asserts strict training boundary purging: `train_end = int(splits.train[-1] + horizon + 1)` and checks `train_end - 1 <= splits.val_tune[0]`, raising a `ValueError` if the last fit observation exceeds the first validation anchor. Equality is permitted because that reading is observed at the forecast origin.
   Slices causal windows and exports predictions/targets via `save_targets` and `save_predictions`.
 - `tests/test_baselines.py`:
   Unit test suite covering:
@@ -56,21 +58,21 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Bineet Keshari under
 
 ### Findings and interpretation from model evaluation & error analysis
 
-Analysis of the 10 verified artifacts (`all_metrics.csv`, `feature_importance.csv`, `per_sensor_mae_60.csv`, and 6 evaluation figures):
+Analysis of the 10 prepared artifacts (three CSV tables and seven evaluation figures):
 
 1. **Horizon degradation and baseline crossover:**
    - **M0 (Persistence)** is effective at very short horizons (15-min test MAE = 3.48 mph, RMSE = 6.37 mph), reflecting traffic inertia. However, its accuracy rapidly degrades as the forecast horizon extends to 60 minutes (60-min test MAE = 5.32 mph, RMSE = 10.25 mph, MAPE = 14.39%).
-   - **M1 (Historical Average)** produces invariant diurnal forecasts across horizons (test MAE = 4.19 mph, RMSE = 7.85 mph, MAPE = 13.03%). Consequently, at 30 minutes, HA matches Persistence (~4.17 vs 4.19 mph), and at 60 minutes, HA dramatically outperforms Persistence (4.19 vs 5.32 mph MAE).
-   - **M3 (Random Forest)** and **M4 (XGBoost)** convincingly outperform both baselines across all horizons:
+   - **M1 (Historical Average)** looks up a potentially different value at each future time-of-week slot; its pooled errors round to nearly the same values across horizons (test MAE = 4.19 mph, RMSE = 7.85 mph, MAPE = 13.03%). Consequently, at 30 minutes, HA matches Persistence (~4.17 vs 4.19 mph), and at 60 minutes, HA dramatically outperforms Persistence (4.19 vs 5.32 mph MAE).
+   - **M3 (Random Forest)** and **M4 (XGBoost)** have lower pooled MAE than both baselines at the reported horizons; this is not superiority on every metric, sensor or period:
      - At 15 min: RF MAE = 2.97 mph, XGB MAE = 2.92 mph (XGB 16.1% improvement over persistence).
      - At 30 min: RF MAE = 3.42 mph, XGB MAE = 3.38 mph (XGB 19.1% improvement over persistence).
      - At 60 min: RF MAE = 3.90 mph, XGB MAE = 3.87 mph (XGB 27.2% improvement over persistence).
-   - **MAE vs. RMSE tradeoff:** While XGBoost achieves slightly lower headline MAE than RF at all horizons (e.g., 3.87 vs 3.90 at 60 min), Random Forest consistently achieves lower headline RMSE (5.44 vs 5.78 at 15m; 6.37 vs 6.91 at 30m; 7.25 vs 7.99 at 60m). This demonstrates that XGBoost's direct horizon models occasionally produce larger tail errors, whereas RF's multi-output bagging ensemble averages out extreme variance, reducing large squared error penalties.
+   - **MAE vs. RMSE tradeoff:** While XGBoost achieves slightly lower headline MAE than RF at all horizons (e.g., 3.87 vs 3.90 at 60 min), Random Forest consistently achieves lower headline RMSE (5.44 vs 5.78 at 15m; 6.37 vs 6.91 at 30m; 7.25 vs 7.99 at 60m). This records an observed MAE/RMSE tradeoff. RF uses averaging and XGBoost uses a selected absolute-error objective, but this comparison does not isolate the cause of their error difference.
 
 2. **Feature importance dynamics (RF vs. XGBoost):**
    - In `feature_importance.csv`, both tree models identify short-term historical speed as the dominant signal, but distribute weight differently:
      - **Random Forest (MDI):** Strongly concentrates weight on the most recent reading `lag_0` (37.61%), followed by short rolling averages `mean_3` (16.94%), `mean_6` (9.39%), and diurnal clock signals `cos_time` (7.79%) and `sin_time` (6.26%).
-     - **XGBoost (Gain):** Distributes importance across smoothed aggregates: `mean_6` (20.44%), `mean_3` (15.89%), `mean_history` (11.86%), and `lag_0` (10.50%), with calendar feature `weekend` (5.76%). Because XGBoost optimizes gradient residuals across independent horizon models, smoothed windows mitigate detector sensor noise.
+     - **XGBoost (Gain):** Distributes importance across smoothed aggregates: `mean_6` (20.44%), `mean_3` (15.89%), `mean_history` (11.86%), and `lag_0` (10.50%), with calendar feature `weekend` (5.76%). Importance scores describe fitted split/gain allocation; they do not establish causal relevance or prove robustness to detector noise.
 
 3. **Per-sensor spatial error heterogeneity (60-minute MAE):**
    - In `per_sensor_mae_60.csv`, evaluation across all 207 sensors reveals dramatic spatial variance:
@@ -78,11 +80,11 @@ Analysis of the 10 verified artifacts (`all_metrics.csv`, `feature_importance.cs
      - M1 historical average: mean 4.20 mph, range [1.22, 12.73] mph.
      - M3 Random Forest: mean 3.91 mph, range [1.14, 10.47] mph.
      - M4 XGBoost: mean 3.89 mph, range [1.08, 9.54] mph.
-   - Low-error sensors (MAE ~1.1–2.0 mph) correspond to peripheral highway segments characterized by steady free-flow traffic where speed rarely fluctuates.
-   - High-error sensors (MAE ~8.0–9.5 mph) correspond to major freeway interchange bottlenecks (e.g., I-10 / I-405 junctions) subject to severe non-recurrent congestion and shockwave propagation. Independent-sensor models lack spatial neighbor awareness; capturing these bottlenecks motivates graph neural networks (GAT) in Phase 2.
+   - The table identifies lower-error sensors but does not itself establish peripheral location, free-flow status or a physical explanation.
+   - Higher-error sensors vary by model. No road-junction mapping, incident labels or shockwave measurements support naming particular interchange bottlenecks. Spatial graph models remain a Phase 2 hypothesis, not a verified remedy.
 
 4. **Peak vs. off-peak slice comparison:**
-   - In `peak_comparison_test.png` and `all_metrics.csv`, error during peak rush-hour periods (07:00–09:00 and 16:00–18:30 on weekdays) is substantially elevated compared to off-peak periods across all models (e.g., 60-min MAE during peak reaches ~5.8 mph for XGB vs ~3.2 mph off-peak). This highlights that predicting the onset and dissipation of non-recurrent congestion remains the primary challenge in highway speed forecasting.
+   - In `peak_comparison_test.png` and `all_metrics.csv`, error during peak rush-hour periods (07:00-10:00 and 16:00-19:00 on weekdays, recorded clock time) is substantially elevated compared to off-peak periods across all models (e.g., 60-min XGBoost MAE is 6.31 mph at peak versus 3.26 mph off-peak). These slices show higher error in the declared peak windows; they do not identify non-recurrent incidents or prove their physical cause.
 
 ### Checks run
 

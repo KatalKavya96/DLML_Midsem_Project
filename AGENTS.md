@@ -26,3 +26,7 @@ Updated by the owner’s coordination workflow on 2026-10-27. Read this file, PR
 - Use chronological purged splits, training-only preprocessing, causal features, no target imputation, matching masks/targets and source/data/config fingerprints. Do not tune on the exposed test interval or fabricate scores/citations/approvals.
 - Preserve the original Downloads/AML. The canonical local implementation is now at the repository root; delivery files, historical placeholders and private artifacts are in the separate sibling DLML_Project_Archive_2026-10-27 archive. Do not reintroduce nested AML/.
 - Faculty scope versus speed-only forecasting, timezone/DST, raw-data rights, exposed test results and final PDF/package/individual viva review remain unresolved. No implementation or commit guarantees final-submission acceptance.
+
+## Owner-authorized integration branch - 2026-10-27
+
+The owner requested syncing merged team work and integrating all remaining required local work on the exact branch `kavya`, overriding the default codex/ prefix for this branch. This includes package 05, necessary shared documentation/evidence, deferred review-log corrections and combined verification. Keep all new commits on kavya; do not commit directly to main. Use the configured real Kavya identity and no co-author trailer; preserve the existing assistance/provenance disclosures. The owner will review the prepared result before raising/merging the final PR. No new model/score tuning, Phase 2 or claim of final faculty acceptance is authorized by this integration.

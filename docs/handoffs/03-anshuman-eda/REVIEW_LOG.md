@@ -1,5 +1,7 @@
 # Anshuman Mehta - module review register
 
+> Coordinator correction (2026-10-27, branch `kavya`): explanatory claims below were reconciled with the source code, measured tables and training profiles. Original agent/environment/check records remain historical self-reports; this edit does not certify student understanding.
+
 Package prepared: 2026-10-27. Role: Dataset EDA and interpretation.
 Status: **integrated and agent-reviewed; member understanding/reproduction pending**. No individual implementation or completion is claimed.
 
@@ -25,7 +27,7 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Anshuman Mehta under
 - `scripts/build_analysis.py`:
   Generates training-focused exploratory data analysis (EDA), dataset audits, and forecast/error evaluation visualizations from a completed experiment run. Key features:
   1. Accepts `--run-dir` and validates run provenance via `_provenance.validate_manifest`.
-  2. Enforces strict training isolation: restricts all dataset summary statistics, histograms, heatmaps, and diurnal profiles strictly to training steps (`end = int(splits.train[-1] + cfg["windows"]["horizon"] + 1)`, `train = values[:end]`), completely isolating validation and test intervals from EDA estimation.
+  2. Enforces strict training isolation: restricts distribution plots, missingness/outage analysis, sensor means and diurnal profiles to training steps (`end = int(splits.train[-1] + cfg["windows"]["horizon"] + 1)`, `train = values[:end]`), while the explicitly labeled global audit fields (overall missing fraction, observed min/max, shape and full date range) summarize the full file. Evaluation plots separately use their named held-out splits.
   3. Audits missing data and sensor statistics: outputs `dataset_audit.json` (recording overall missing fraction 8.11%, training missing fraction 7.13%, total outage runs 17,867, longest outage 5,800 min, observed speed range 0.33–70.0 mph, and 1,301 training steps with all 207 sensors missing) and `sensor_audit.csv` (sensor ID, training missing fraction, and training mean speed for all 207 detectors).
   4. Generates 6 core training EDA figures:
      - `speed_distribution.png`: Histogram of valid training speeds showing the characteristic bimodal distribution of highway traffic.
@@ -38,7 +40,7 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Anshuman Mehta under
 - `src/trafficml/viz/__init__.py`:
   Package marker for the visualization subpackage under `trafficml`.
 - `notebooks/.gitkeep`:
-  Preserves the `notebooks/` directory structure for student exploration while keeping untracked scratch files excluded.
+  Preserves an otherwise empty directory; a .gitkeep file does not itself exclude scratch files.
 - `verification/full-phase1-20261026/analysis/*`:
   Contains the 8 verified training EDA and audit artifacts from the historical full Phase 1 run (`results/runs/phase1-full-v1`), providing precomputed, auditable evidence for the team report.
 - Inputs: `metr-la.h5` series, `graph_sensor_locations.csv`, `configs/data.yaml`, and run directories containing predictions/metrics tables. Outputs: 6 training EDA plots, audit JSON/CSV, evaluation plots, and importance tables.
@@ -48,24 +50,24 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Anshuman Mehta under
 
 1. **Missingness structure & outage runs:**
    - The METR-LA dataset exhibits an overall missing fraction of 8.11% (7.13% in the training split).
-   - Missing readings are recorded as 0.0 mph in the raw loop detector output. Converting these to NaNs (as implemented in `trafficml.data.masking`) is critical so missing readings do not artificially skew speed distributions or masquerade as severe traffic jams.
+   - The benchmark policy masks zero and NaN readings as missing; zero speed is not universally an outage in physical traffic. Converting these to NaNs (as implemented in `trafficml.data.masking`) is critical so missing readings do not artificially skew speed distributions or masquerade as severe traffic jams.
    - Outages are strongly clustered: 17,867 distinct outage runs occur in the training split. While the distribution is heavy-tailed with the majority of outages lasting 5 to 30 minutes (1–6 steps), extended sensor dropouts reach up to 5,800 minutes (~4.0 days). Furthermore, 1,301 5-minute steps in the training partition have all 207 sensors missing simultaneously, indicative of system-wide data collection/telemetry outages.
-   - Modeling implication: Short outages can be safely interpolated using causal forward-filling (`SensorFeatures`), but long outages require a fallback to the training-set median (`self.median_`) to avoid propagating obsolete pre-congestion speeds into congested periods. Target masking (`valid_mask`) is mandatory to avoid penalizing models for unobserved intervals.
+   - Modeling implication: `SensorFeatures` forward-fills only within each sample history, then substitutes the training median for remaining leading gaps. An entirely missing history uses that median throughout. There is no explicit outage-duration threshold, interpolation-quality guarantee or verified reconstruction of missing observations. Target masking (`valid_mask`) is mandatory to avoid penalizing models for unobserved intervals.
 
 2. **Speed distribution:**
-   - Valid training speeds range from 0.33 mph to 70.0 mph.
+   - The full-file audit reports observed speeds from 0.33 to 70.0 mph; the plotted histogram itself uses training readings only.
    - The histogram reveals a pronounced bimodal distribution: a sharp, dominant peak near free-flow highway speed (60–65 mph) where traffic operates most of the day, and a broad secondary shoulder between 10 and 45 mph representing congested traffic conditions.
-   - Modeling implication: Standard linear regression assuming Gaussian errors will struggle with this bimodality. Non-linear tree ensembles (Random Forest, XGBoost) and deep spatio-temporal architectures are better suited to capture the non-linear regime shift between free-flow and congested states.
+   - Modeling implication: A multimodal marginal speed histogram does not establish the shape of conditional residuals or rule out linear regression. Tree ensembles are the implemented nonlinear candidates; their benefit is assessed against the measured baselines, not inferred from this histogram. No deep-model superiority was tested.
 
 3. **Calendar and diurnal profiles:**
    - Weekday vs. weekend profiles exhibit fundamentally different dynamics:
-     - Weekdays show classic twin-peak congestion: a morning rush-hour dip (minimum ~53 mph between 07:30 and 08:30) and a more severe evening rush-hour dip (minimum ~51 mph between 16:30 and 18:00), returning to free-flow speeds (~63 mph) during late-night and early-morning hours.
-     - Weekends exhibit no morning commute depression; speeds remain near free-flow (~61–63 mph) throughout the morning, dropping only slightly in late afternoon/evening (~58 mph).
-   - Modeling implication: Time-of-day and day-of-week are strong causal predictors of traffic speed. This directly validates the 5 cyclical calendar features (`sin_time`, `cos_time`, `sin_week`, `cos_week`, `weekend`) in `SensorFeatures`.
+     - Recomputing the exact training profile plotted here gives weekday minima of 49.05 mph at recorded 08:35 in the 06:00-10:00 interval, and 45.73 mph at 17:25 in the 15:00-19:00 interval. These are descriptive means, with unresolved timezone/DST.
+     - The weekend profile differs from weekdays; detailed clock values should be taken from the plotted training aggregation rather than inferred commute labels.
+   - Modeling implication: These associations motivate the calendar feature group (`sin_time`, `cos_time`, `sin_week`, `cos_week`, `weekend`). They do not establish causation or an isolated forecasting improvement; feature-group ablation was not performed.
 
 4. **Spatial heterogeneity & network topology:**
-   - `sensor_locations.png` and `speed_heatmap.png` illustrate marked spatial variation across the 207 sensors along Los Angeles freeways (I-5, I-10, I-405, US-101, etc.). Certain bottleneck corridors consistently experience heavy recurring congestion, while peripheral freeway segments remain near free-flow.
-   - Modeling implication: Spatial correlation via graph adjacency (`trafficml.data.graph`) and per-sensor modeling are critical to capture localized congestion propagation.
+   - The sensor scatter and first-training-day heatmap show variation across sensor locations and recorded time. No road-label join or repeated bottleneck identification is supplied, so particular freeway junctions, recurring corridor bottlenecks and physical propagation are not established.
+   - Modeling implication: Spatial modeling is a future hypothesis. The current estimators are independent per sensor, and these plots do not demonstrate that graph input is necessary or beneficial.
 
 ### Checks run
 
@@ -89,7 +91,7 @@ The historical 56-test result is not a new run. Full test and script execution r
 
 ### Observations and open questions
 
-- Strict training isolation: `build_analysis.py` properly restricts all EDA plots to `values[:end]` (training split only). This design choice avoids data snooping and information leakage into test splits.
+- Strict training isolation: Training distribution/pattern plots use `values[:end]`; global audit fields describe the full file, and evaluation figures use explicitly named splits. The test interval was already exposed, so this script is not proof of untouched final evaluation.
 - Cross-package dependencies: `scripts/build_analysis.py` requires `_common.py`, `_provenance.py`, and `trafficml.eval.predictions` from package `05-kavya-integration`. These will resolve once package 05 is integrated.
 - Raw data requirements: Generating new plots from raw data requires `metr-la.h5` and `graph_sensor_locations.csv` under `data/raw/`, which are excluded from Git per data redistribution policy.
 - Timezone handling: As noted in `dataset_audit.json`, timestamps are naive (`timezone: None`). Whether daylight saving time transitions affect the 5-minute sampling intervals in METR-LA remains unverified in published benchmarks.
