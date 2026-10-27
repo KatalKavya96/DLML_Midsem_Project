@@ -1,0 +1,88 @@
+[
+  {
+    "model": "rf",
+    "candidate": 0,
+    "validation_mae": 3.829263179035557,
+    "valid_count": 28173,
+    "pilot_sensor_ids": [
+      "773869",
+      "772140",
+      "769430",
+      "767523",
+      "769345",
+      "769373"
+    ],
+    "params": {
+      "n_estimators": 48,
+      "max_depth": 12,
+      "min_samples_leaf": 8,
+      "max_features": 0.8
+    }
+  },
+  {
+    "model": "rf",
+    "candidate": 1,
+    "validation_mae": 3.881242973796942,
+    "valid_count": 28173,
+    "pilot_sensor_ids": [
+      "773869",
+      "772140",
+      "769430",
+      "767523",
+      "769345",
+      "769373"
+    ],
+    "params": {
+      "n_estimators": 64,
+      "max_depth": 16,
+      "min_samples_leaf": 5,
+      "max_features": 0.8
+    }
+  },
+  {
+    "model": "xgb",
+    "candidate": 0,
+    "validation_mae": 3.8238281665956766,
+    "valid_count": 28173,
+    "pilot_sensor_ids": [
+      "773869",
+      "772140",
+      "769430",
+      "767523",
+      "769345",
+      "769373"
+    ],
+    "params": {
+      "n_estimators": 100,
+      "max_depth": 3,
+      "learning_rate": 0.08,
+      "min_child_weight": 10,
+      "subsample": 0.8,
+      "colsample_bytree": 0.9,
+      "objective": "reg:squarederror"
+    }
+  },
+  {
+    "model": "xgb",
+    "candidate": 1,
+    "validation_mae": 3.4127483019258245,
+    "valid_count": 28173,
+    "pilot_sensor_ids": [
+      "773869",
+      "772140",
+      "769430",
+      "767523",
+      "769345",
+      "769373"
+    ],
+    "params": {
+      "n_estimators": 140,
+      "max_depth": 3,
+      "learning_rate": 0.06,
+      "min_child_weight": 10,
+      "subsample": 0.8,
+      "colsample_bytree": 0.9,
+      "objective": "reg:absoluteerror"
+    }
+  }
+]

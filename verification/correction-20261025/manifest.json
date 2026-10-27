@@ -1,0 +1,152 @@
+{
+  "caveats": [
+    "Dataset choice, roles and methodology are not accepted decisions.",
+    "Timezone/DST is unresolved; peak/off-peak is a provisional clock-time slice.",
+    "Original test results were already inspected; test is not a fresh holdout."
+  ],
+  "command": [
+    "/tmp/aml-repair-env/bin/python",
+    "scripts/run_baselines.py",
+    "--run-dir",
+    "results/runs/correction-20261025",
+    "--splits",
+    "val_tune",
+    "val_stack",
+    "test"
+  ],
+  "config": "paths:\n  speed_h5: data/raw/metr-la.h5\n  sensor_ids: data/raw/sensor_graph/graph_sensor_ids.txt\n  distances: data/raw/sensor_graph/distances_la_2012.csv\n  locations: data/raw/sensor_graph/graph_sensor_locations.csv\n  dcrnn_adj: data/raw/sensor_graph/adj_mx.pkl\n\nseries:\n  freq_minutes: 5\n  null_value: 0.0          # 0 mph = missing / sensor outage\n\nwindows:\n  history: 12              # t-11 .. t\n  horizon: 12              # t+1 .. t+12\n  report_horizons: [3, 6, 12]\n\nsplit:                     # provisional nominal anchor fractions; purge horizon-1 at boundaries\n  train_frac: 0.7\n  test_frac: 0.2\n  # validation halves retained for prototype compatibility, not an approved stacking decision\n\ngraph:\n  normalized_k: 0.1        # Gaussian-kernel threshold (kappa)\n",
+  "created_utc": "2026-10-25T18:28:34.687399+00:00",
+  "git_base_commit": "72693825afa1ef9841d8417767bd71fa6c665d80",
+  "git_worktree_dirty": true,
+  "identity": {
+    "config_sha256": "ae5d082abcc9baadae12e1abfa9598dde3a15e97117f9a3f2f6d4a89ea7dcdd4",
+    "data_sha256": {
+      "data/raw/metr-la.h5": "64784b76d6fb8ec9bff4b6decafb354da2bb37840468fdccee5044e511277c05",
+      "data/raw/sensor_graph/adj_mx.pkl": "a35687c6e15aa228dc45027b0ed2a0ea0f4ec78f573deb992c595092d12f61b3",
+      "data/raw/sensor_graph/distances_la_2012.csv": "a576a2a3e28dbb959be6da22688e24dd1b246b81264595e129147c256cd53de5",
+      "data/raw/sensor_graph/graph_sensor_ids.txt": "3ba026caa2e6263ab0ea54b0fa1b125dbfa7216544cd05313b555e826292b990",
+      "data/raw/sensor_graph/graph_sensor_locations.csv": "eb8ea96e07358b45d0e4ba3b89c2673fa20c54af50150249e627389e749ade6f"
+    },
+    "source_sha256": {
+      "pyproject.toml": "3a1a240a40d0fc1d0adaa82b765b164f7914d09055d3b230e885ec7c8e9a7dc1",
+      "requirements.txt": "a98d7fc694669ccedab470ef7b5ba3d5fd0ce3a067405ef4f5e339ca3118e984",
+      "scripts/_common.py": "c010be1519fd1a3d0707b6cf56bb5bb4b6ab81a7fa2b3a5e2e22e8d18a70df77",
+      "scripts/_provenance.py": "58aa5b30302a87566b5d115ecade9331051b68d55041e46a5b85120d95ed55eb",
+      "scripts/check_data.py": "27598d9aeec98b0e29226007a7574a22cd7c2fbc20792bef8c362aa180c98a3c",
+      "scripts/evaluate.py": "df126bd4301f2dd4e8f7fe96e2d66f5005b3cc69a3f5bf3d5dde1ea06bc73d12",
+      "scripts/run_baselines.py": "c6f2384362436b3eb8934485eba28539758b52766229ae79f8dc750e66236abd",
+      "src/trafficml/__init__.py": "8e6d1d3de33bb9c878ebf3c8774557b49ad88577b60329a221a6e084b2602f4a",
+      "src/trafficml/data/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/trafficml/data/graph.py": "5cc44622306cd3528d1b947902f43a06e807d6e10b954fa2b051a0e4c59e5bb9",
+      "src/trafficml/data/load.py": "e720652a87452f1a75b6a8a682990630cf76b8349abf5145796195697df36e49",
+      "src/trafficml/data/masking.py": "de61249eb25d81aca8ae80c74571fa1c51e85587c309235a4eda2e7586af2d22",
+      "src/trafficml/data/splits.py": "66b7c3e4aa0a09b80bce48e5d7c5651473b328c599aa7d01e3df4c7e985bd9bf",
+      "src/trafficml/eval/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/trafficml/eval/metrics.py": "5ab147197d836dfaaf37d22b40c3720a2a01744fe03fbcb9120c2c576197cbd9",
+      "src/trafficml/eval/predictions.py": "72bbe69e3873e0925d2313fd5f3c3812da3df729081416026139afac9352686d",
+      "src/trafficml/eval/significance.py": "490ea2dd0e5b380455fc749adc2d0a3c9cdfaf2f43ae425b492d3444230fa1c6",
+      "src/trafficml/eval/slices.py": "2ca087d791fb77b1f3801206da4026b29a9a4233e9fe7326448f39280b15e679",
+      "src/trafficml/features/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/trafficml/models/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/trafficml/models/baselines.py": "23f555a506766a397566496ee12f818b23519561e7477cddde1900c6b72df3b7",
+      "src/trafficml/viz/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "metric_policy": "micro-average valid target points per horizon; MAPE percent, no floor",
+  "packages": {
+    "PyYAML": "6.0.3",
+    "Pygments": "2.21.0",
+    "annotated-types": "0.8.0",
+    "anyio": "4.15.1",
+    "blosc2": "4.14.1",
+    "certifi": "2026.10.23",
+    "h11": "0.16.0",
+    "h2": "4.4.1",
+    "hpack": "4.2.0",
+    "httpcore": "1.0.9",
+    "httpx": "0.28.1",
+    "hyperframe": "6.1.0",
+    "idna": "3.20",
+    "iniconfig": "2.3.1",
+    "markdown-it-py": "4.2.0",
+    "mdurl": "0.1.2",
+    "msgpack": "1.2.3",
+    "ndindex": "1.10.1",
+    "numexpr": "2.14.2",
+    "numpy": "2.3.5",
+    "packaging": "26.3",
+    "pandas": "2.2.3",
+    "pluggy": "1.7.0",
+    "py-cpuinfo": "9.0.0",
+    "pydantic": "2.14.1",
+    "pydantic_core": "2.50.1",
+    "pytest": "8.4.2",
+    "python-dateutil": "3.0.0",
+    "pytz": "2026.5",
+    "rich": "15.0.0",
+    "ruff": "0.14.2",
+    "scipy": "1.16.3",
+    "setuptools": "80.9.0",
+    "six": "1.17.0",
+    "tables": "3.10.2",
+    "threadpoolctl": "3.7.0",
+    "trafficml": "0.1.0",
+    "typing-inspection": "0.4.4",
+    "typing_extensions": "4.16.0",
+    "tzdata": "2026.5",
+    "wheel": "0.45.1"
+  },
+  "partition_policy": "nominal anchor fractions; earlier partitions purged by horizon-1",
+  "partitions": [
+    {
+      "first_anchor": "2012-03-01 00:55:00",
+      "first_target": "2012-03-01 01:00:00",
+      "last_anchor": "2012-05-23 05:45:00",
+      "last_target": "2012-05-23 06:45:00",
+      "samples": "23963",
+      "split": "train"
+    },
+    {
+      "first_anchor": "2012-05-23 06:45:00",
+      "first_target": "2012-05-23 06:50:00",
+      "last_anchor": "2012-05-29 04:25:00",
+      "last_target": "2012-05-29 05:25:00",
+      "samples": "1701",
+      "split": "val_tune"
+    },
+    {
+      "first_anchor": "2012-05-29 05:25:00",
+      "first_target": "2012-05-29 05:30:00",
+      "last_anchor": "2012-06-04 03:10:00",
+      "last_target": "2012-06-04 04:10:00",
+      "samples": "1702",
+      "split": "val_stack"
+    },
+    {
+      "first_anchor": "2012-06-04 04:10:00",
+      "first_target": "2012-06-04 04:15:00",
+      "last_anchor": "2012-06-27 22:55:00",
+      "last_target": "2012-06-27 23:55:00",
+      "samples": "6850",
+      "split": "test"
+    }
+  ],
+  "peak_policy": "weekday target hours [07,10),[16,19); provisional naive clock labels",
+  "platform": "macOS-15.7.7-arm64-arm-64bit",
+  "purpose": "prototype correction verification; not final research results",
+  "python": "3.12.14",
+  "requested_splits": [
+    "val_tune",
+    "val_stack",
+    "test"
+  ],
+  "sample_counts": {
+    "test": 6850,
+    "train": 23963,
+    "val_stack": 1702,
+    "val_tune": 1701
+  },
+  "schema": 1,
+  "source_identity_note": "source_sha256 identifies working files, including local fixes",
+  "target_policy": "zero and non-finite sensor readings excluded; targets never imputed"
+}
