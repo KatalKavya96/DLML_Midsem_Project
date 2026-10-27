@@ -29,3 +29,14 @@ Original implementation and substantial owner/AI assistance remain disclosed. Me
 ## Gates before final locking/submission
 
 Review the integration PR and actual CI, export/inspect the final PDF, rehearse slides/viva, verify allowed assistance and genuine member contributions, and clarify project-specific flow/LWR scope versus speed-only Phase 1. Raw-data redistribution/timezone remain unresolved; the exposed test remains exploratory. Do not certify these gates from passing code checks alone. Data/models/predictions/environments/bundles remain excluded from Git.
+
+## Phase 1 review, new report and slide content - 2026-10-27
+
+At Rudraksh's request, on branch `codex/rudraksh-phase1-report` from origin/main b717675 (prepared with Claude Code assistance; not yet committed or reviewed by the team):
+
+- Reviewed the repository against the faculty Phase 1 rubric and the Project 4 brief (now mapped in docs/02_requirements_traceability.md). An agent code review found no leakage, split, mask, metric or horizon defects; four low-severity edge cases are not triggered by the real data. No runtime code, config, scores or frozen evidence changed, so the full run's source identity is unchanged.
+- Replaced report/ieee and report/phase1 with a new IEEE report, report/main.tex, with figures in report/figures/. All numbers come from verification/full-phase1-20261026. The new congestion map, per-sensor error maps and feature-importance chart are drawn by report/figures/make_figures.py from saved evidence and the DCRNN graph files; nothing was retrained. Compiled with Tectonic 0.17 to report/phase1_report.pdf (8 pages); every page was rendered and inspected.
+- Removed slides/output/phase1-study.pptx. Built a new 10-slide, simple-language deck in Canva, slides/phase1_presentation.pptx: one slide per member's module (no names on those slides), plus problem, results, failure analysis and next steps, using the congestion map, daily profile and error map from the run. slides/SLIDE_CONTENT.md is the speaker guide.
+- Updated docs/handoffs/FILE_OWNERSHIP.json: removed the 11 deleted report/slides paths and listed the new report and slide files under 06-rudraksh-report-slides.
+- Added the brief's pre-reads (GAT, CityFlow) and the LWR and SUMO sources to docs/LITERATURE.md.
+- Fresh local checks: `pytest -q -ra` gave 55 passed and 1 skipped (metr-la.h5 not present locally; the graph files were fetched and match the run's SHA-256 values); `ruff check .` and `ruff format --check .` passed (ruff 0.14.2).

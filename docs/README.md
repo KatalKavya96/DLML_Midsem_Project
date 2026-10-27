@@ -13,6 +13,7 @@ The implemented Phase 1 project lives at the repository root. Initial placeholde
 - [Historical Phase 1 completion plan](12_phase1_completion_plan.md)
 - [Retrospective technical log and revised roles](13_phase1_log_report.md)
 - [Agent handoffs](handoffs/README.md)
+- [Phase 1 IEEE report (PDF)](../report/phase1_report.pdf), [report sources](../report/README.md), [presentation](../slides/phase1_presentation.pptx) and [speaker guide](../slides/SLIDE_CONTENT.md)
 - [Measured full-run evidence](../verification/full-phase1-20261026/README.md)
 
 Faculty scope clarification and final-submission checks remain pending.

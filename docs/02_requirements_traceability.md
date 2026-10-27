@@ -1,24 +1,46 @@
 # Phase 1 requirements and evidence mapping
 
-Registered: 2026-10-27, Asia/Kolkata. This replaces the archived placeholder with an evidence map, not faculty approval or a final-submission certificate.
+Registered: 2026-10-27, Asia/Kolkata; updated 2026-10-27 with the Project 4 brief. This is an evidence map, not faculty approval or a final-submission certificate.
 
-Source: [supplied faculty instructions](../CSAI_Project_Instructions_Phase_1_and_Phase_2.pdf). The broader allocated project title is recorded in [PROJECT.md](../PROJECT.md). The separate project-ideas technical brief is not available here; do not invent its detailed requirements. Generic evaluation categories below are requirements; particular model choices, feature counts and artifact formats beyond that source are project implementation choices.
+Sources:
+
+- [Faculty instructions](../CSAI_Project_Instructions_Phase_1_and_Phase_2.pdf): team rules, the Phase 1 rubric categories and individual viva.
+- Project 4 brief, "Traffic Flow Prediction and Signal Control via Graph Attention Networks and Flow Models", supplied by the team on 2026-10-27. It asks for an AML baseline (lagged speed/flow/occupancy, time-of-day and road-segment features; XGBoost per segment or multi-output Random Forest), identification of the independent-model gap, a GAT/diffusion model over METR-LA's fixed adjacency (Phase 2), chronological splits, MAE/RMSE/MAPE by horizon, equal history windows, peak versus off-peak reporting, training-only scaling, cyclic time features, outage masking, congestion maps, and an optional simulated-only signal experiment. Pre-reads: Veličković et al. (2018) and CityFlow (2019).
+
+## Phase 1 rubric
 
 | Faculty category | Implemented evidence | Verification / remaining gate |
 | --- | --- | --- |
-| Literature review | [Six-source synthesis](LITERATURE.md), report bibliography | Source-scope disclosure retained; full student reading/understanding not certified |
-| Dataset quality and EDA | [Dataset card](DATASET_CARD.md), [training EDA/audit](../verification/full-phase1-20261026/analysis/) | Loader/graph and audit checks; speed-only suitability versus broader title, timezone and raw-data rights remain open |
-| Feature engineering | [38-feature explanation](METHODS_AND_VIVA.md), causal feature tests | Creation is implemented; no formal feature selection or group-ablation benefit claimed |
-| Theoretical rigor | [Methods/viva guide](METHODS_AND_VIVA.md), IEEE sections | Explain assumptions, bagging/boosting, masking, chronology, metrics and limits; individual defense pending |
-| Model application | Two references plus RF/XGB, bounded validation tuning, saved predictions | Common-target MAE/RMSE/MAPE and valid counts; old test interval exposed, exploratory results only |
-| GitHub and code quality | Member PRs and prepared Kavya integration, pinned environment, tests and [CI](../.github/workflows/tests.yml) | Actual author/assistance history retained; integration PR/remote CI review remains before locking |
-| Presentation | [Editable 11-slide deck](../slides/output/phase1-study.pptx) | Previously rendered/inspected; native presentation rehearsal and individual explanations pending |
-| Individual viva | Module reviews and viva questions | Every member must understand and demonstrate the full project; agent activity does not certify that |
-| LaTeX/IEEE report | [IEEE source](../report/ieee/main.tex), generated measured tables and figures | Source previously compiled; final PDF export and page-layout review still pending |
-| Exactly five same-section members | [Team T072, Section C roster](../PROJECT.md) | Roster recorded from supplied faculty allocation; no invented role completion |
+| Literature review | [Source register](LITERATURE.md) including the brief's pre-reads; report Section III | Full student reading/understanding not certified |
+| Dataset quality and EDA | [Dataset card](DATASET_CARD.md), [training EDA/audit](../verification/full-phase1-20261026/analysis/), congestion map in [report figures](../report/figures/) | Timezone and raw-data rights remain open |
+| Feature engineering | 38 causal features ([methods](METHODS_AND_VIVA.md)), causal feature tests, feature-importance figure | No formal feature-selection or ablation benefit claimed |
+| Theoretical rigor | [Methods/viva guide](METHODS_AND_VIVA.md), report Sections II and VI | Individual defense pending |
+| Model application | Persistence, historical average, multi-output RF, direct XGBoost; validation-only tuning | Test interval previously exposed; test results exploratory |
+| GitHub and code quality | Member PRs #2-#6, pinned environment, tests and [CI](../.github/workflows/tests.yml) | Remote CI result to be checked on the PR |
+| Presentation | [10-slide deck](../slides/phase1_presentation.pptx), one slide per member's module, with a [speaker guide](../slides/SLIDE_CONTENT.md) | Rehearsal and individual explanations pending |
+| Individual viva | Module reviews and viva questions | Every member must understand and demonstrate the full project |
+| LaTeX/IEEE report | [Compiled report](../report/phase1_report.pdf) (8 pages) from [IEEE source](../report/main.tex), with [figures and provenance](../report/README.md) | Team review of the text |
+| Exactly five same-section members | [Team T072, Section C roster](../PROJECT.md) | Roster from the faculty allocation |
 
-## Phase distinction and unresolved traffic scope
+## Project 4 brief, Phase 1 items
 
-Phase 1 is traditional ML evaluation. Phase 2 evaluates deep-learning architecture, DL literature, regularization, ablation studies, technical validation and shared submission components; a meaningful justified ML-DL hybrid can earn additional marks. None of this establishes that a GAT, calibrated LWR or simulated controller has already been implemented or is a Phase 1 requirement. Resolve the project-specific brief with faculty. Any signal control is simulated only.
+| Brief item | Status | Evidence |
+| --- | --- | --- |
+| Lagged speed and time-of-day features | Done | 12 lags, rolling statistics, sin/cos time of day and week |
+| Flow and occupancy features | Not possible with METR-LA | The dataset has speed only; nothing is fabricated. PeMS is the brief's suggested extension |
+| Road-segment features | Implicit | One model per sensor learns that sensor's behaviour |
+| XGBoost per segment or multi-output RF | Done (both) | `src/trafficml/models/trees.py` |
+| Identify the independent-model gap | Done | Report Section VIII; spatially clustered errors in `report/figures/error_maps.png` |
+| Chronological splits | Done | Purged 70/10/20 split, `src/trafficml/data/splits.py` |
+| Fit scaling only on training timestamps | Done | No scaler is needed for trees; medians and historical averages are fitted on training only |
+| Cyclic time features | Done | `src/trafficml/features/temporal.py` |
+| Mask outages instead of zero traffic | Done | `src/trafficml/data/masking.py`; identical masks for every model |
+| MAE, RMSE, MAPE by horizon | Done | `verification/full-phase1-20261026/analysis/all_metrics.csv` (all 12 horizons) |
+| Equal history windows | Done | 12 steps (60 minutes) for every model |
+| Peak versus off-peak | Done | Peak/off-peak/weekday/weekend slices; peak hours use recorded clock time |
+| Adjacency from the supplied graph | Done | Rebuilt Gaussian-kernel adjacency matches DCRNN `adj_mx.pkl` |
+| Congestion maps, horizon-wise metrics | Done | `report/figures/congestion_map.png`, `error_maps.png`, `mae_horizons_test.png` |
 
-The available generic instructions do not specify a universal minimum accuracy, number of models, papers, report pages or slide count. The deliverables above are evidence of our chosen study, not invented rubric thresholds.
+## Phase 2 (deferred)
+
+GAT or diffusion graph model in PyTorch/PyTorch Geometric, deep-learning literature, ablations, an optional justified ML-DL hybrid and an optional simulated-only signal policy (SUMO or CityFlow). None of these is implemented in Phase 1. The brief does not require a calibrated LWR model; LWR appears only as theoretical motivation.

@@ -34,4 +34,4 @@ The local Phase 1 speed-forecasting implementation, full-sensor experiment, EDA,
 
 ## Source and title clarification
 
-The heading, team ID, section, names, and enrollment numbers are transcribed from the faculty allocation image supplied by the owner on 2026-10-22. Earlier supplied notes use the title “Traffic Flow Prediction and Signal Control via Graph Attention Networks and Flow Models.” This document uses the image's allocation title; the difference in wording and intended LWR scope should be clarified during requirements documentation.
+The heading, team ID, section, names, and enrollment numbers are transcribed from the faculty allocation image supplied by the owner on 2026-10-22. Earlier supplied notes use the title “Traffic Flow Prediction and Signal Control via Graph Attention Networks and Flow Models.” This document uses the image's allocation title. The Project 4 brief received on 2026-10-27 uses the second title; it recommends METR-LA, describes the Phase 1 ML baseline and Phase 2 graph model, and does not require a calibrated LWR model. The Phase 1 report uses the brief's title.

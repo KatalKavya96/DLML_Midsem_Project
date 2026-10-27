@@ -82,7 +82,7 @@ This prints forecasts 15, 30 and 60 minutes after the dataset's last observation
 
 ## Explain and report
 
-`report/phase1/results.md` and `metrics.tex` are generated from actual completed outputs. `report/ieee/main.tex` is the IEEE-style report source. Copy the generated metrics table and selected run images into its project directory before recompiling, as documented in `report/ieee/README.md`. Presentation material is under `slides/`.
+The Phase 1 IEEE report is [report/phase1_report.pdf](report/phase1_report.pdf) (source [report/main.tex](report/main.tex)), with its figures in `report/figures/`; see [report/README.md](report/README.md) for compiling and for where every number comes from. `scripts/build_report.py` still writes generated result tables to `report/phase1/` for a new run. The presentation is [slides/phase1_presentation.pptx](slides/phase1_presentation.pptx), with a speaker guide in [slides/SLIDE_CONTENT.md](slides/SLIDE_CONTENT.md).
 
 Key limitations: prior test exposure; provisional clock timezone/DST and peak windows; missing-target selection bias in multi-output RF; strided training; a small pilot search; a single region/period; low-speed MAPE instability. The graph is verified but not a prediction input. Multi-seed stability, graph learning, calibrated LWR physics and signal simulation remain future work.
 
