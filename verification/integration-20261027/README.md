@@ -19,3 +19,11 @@ Corrected review logs 02-04 without rewriting original check outcomes or claimin
 ## Scope
 
 The original full-run scores remain exploratory because the test interval was already inspected. Existing 24 negative raw XGBoost forecasts remain disclosed and unchanged. No independently implemented member history, faculty acceptance, pristine holdout, Phase 2 implementation or zero-error guarantee is asserted. Remote CI and final PR acceptance are not claimed by local checks.
+
+## Clean tracked-source verification
+
+Exported only Git-tracked files from `212ebcd4833a4261102863fb0795b23f9ccd893d` into a fresh temporary directory with no raw data, saved runs or model binaries. Using the existing verified Python dependencies, pytest reported **54 passed, 2 skipped** (the two real-data checks correctly skipped because raw sensor files are excluded). This checks source closure, not a fresh installation/download of every dependency.
+
+Ruff lint/format passed for 37 files. All eight CLI --help entrypoints imported successfully. The built pure-Python wheel imported outside either source checkout. Every frozen full-run runtime source/config/requirements hash matched the clean export, so no new model run was needed. Matplotlib emitted host font/cache warnings but returned success; the existing sandbox restricts normal home cache paths.
+
+`checks.json` is a compact receipt. Later changes in this branch only record verification/documentation; runtime source is unchanged. No remote CI result or final-submission approval is inferred.

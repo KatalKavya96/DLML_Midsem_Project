@@ -33,7 +33,7 @@ Environment: existing isolated Python 3.12.14 environment at /tmp/aml-repair-env
 | scripts/predict.py, sensor 773869 at latest | Loaded saved RF/XGB and produced 15/30/60-minute historical-demo forecasts; frozen manifest identity accepted |
 | IEEE compile at canonical report/ieee path | Successful desktop compiler result; no exported final PDF/page-layout approval claimed |
 
-Clean tracked-source export and final commit-scope verification are recorded in verification/integration-20261027/README.md after execution. Remote CI is not claimed until a branch/PR actually runs it.
+Clean tracked-source export at revision 212ebcd passed 54 tests with the two intentionally missing real-data checks skipped; lint/format and all eight CLI imports passed. Built wheel import passed outside the source checkout. Source fingerprints matched the frozen full run. Final commit-scope details are recorded in verification/integration-20261027/README.md and checks.json. Remote CI is not claimed until a branch/PR actually runs it.
 
 ## Remaining human and submission gates
 
