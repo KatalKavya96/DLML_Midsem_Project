@@ -3,6 +3,7 @@
 The implemented Phase 1 project lives at the repository root. Initial placeholder research documents are preserved in the separate sibling archive, not presented as completed requirements mapping.
 
 - [Current project state](../PROJECT_STATE.md)
+- [Requirements/evidence mapping](02_requirements_traceability.md)
 - [Dataset card](DATASET_CARD.md)
 - [Methods and viva guide](METHODS_AND_VIVA.md)
 - [Literature synthesis](LITERATURE.md)
@@ -15,3 +16,5 @@ The implemented Phase 1 project lives at the repository root. Initial placeholde
 - [Measured full-run evidence](../verification/full-phase1-20261026/README.md)
 
 Faculty scope clarification and final-submission checks remain pending.
+
+- [Current integration verification](../verification/integration-20261027/README.md)

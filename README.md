@@ -1,8 +1,8 @@
 # Phase 1 traffic speed forecasting — Team T072
 
-> Team coordination: use this repository's **main** as base and PR target, personal `codex/` branches, and payload files directly at the root. No `integration/phase1-handoff` branch is needed. Members are authorized to push their own branches and raise PRs. See [current handoff rules](docs/handoffs/HANDOFF.md). A coordination-only commit does not include all module source: files described below may still be arriving through member PRs. The owner's full local reference is distinct from the published baseline.
+> Integration status: the four member modules have merged into `main`; branch `kavya` adds the remaining runtime, environment, verification and academic artifacts. Review this branch through a PR; do not commit directly to `main`. No `integration/phase1-handoff` branch is required. See [current state](PROJECT_STATE.md) and [requirements mapping](docs/02_requirements_traceability.md).
 
-Canonical repository: `DLML_Midsem_Project`. The implementation lives directly at this repository root (`src/trafficml`, `scripts`, `tests`, `configs`). There is no nested `AML/` project. Delivery ZIPs, old scaffolding and private build files were moved to the separate sibling `DLML_Project_Archive_2026-10-27` folder. Read [current state](PROJECT_STATE.md), [team roster](PROJECT.md) and [handoff instructions](docs/handoffs/HANDOFF.md).
+Canonical repository: `KatalKavya96/DLML_Midsem_Project`. The implementation lives directly at this repository root (`src/trafficml`, `scripts`, `tests`, `configs`). There is no nested `AML/` project. Delivery ZIPs, old scaffolding and private build files were moved to the separate sibling `DLML_Project_Archive_2026-10-27` folder. Read [current state](PROJECT_STATE.md), [team roster](PROJECT.md) and [handoff instructions](docs/handoffs/HANDOFF.md).
 
 A local, end-to-end forecasting study using **Persistence, Historical Average, Random Forest and XGBoost** on the existing METR-LA files. No neural networks, graph-neighbour features, UI or traffic-signal controller are included. The broader faculty title/LWR scope remains to be reconciled; do not present forecasting results as traffic-control benefits.
 
@@ -88,4 +88,4 @@ Key limitations: prior test exposure; provisional clock timezone/DST and peak wi
 
 ## Integrity and ownership
 
-Original teammate code/plan and correction records are retained as history. Report actual contributions and assistance honestly. Team members need to understand the full pipeline for viva; a completed code package cannot certify that understanding. Nothing in this local extension authorizes another GitHub push.
+Original teammate code/plan and correction records are retained as history. Report actual contributions and assistance honestly. Team members need to understand the full pipeline for viva; a completed code package cannot certify that understanding. The owner-authorized integration is prepared on branch `kavya`; branch publication and PR review are separate from merging or declaring final acceptance.

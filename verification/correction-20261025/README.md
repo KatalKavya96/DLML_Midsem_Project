@@ -1,0 +1,3 @@
+# Correction verification evidence
+
+These small outputs were regenerated from the supplied local data after the fixes. They verify the prototype; they are not approved final research results. No predictions or raw datasets are published. The manifest captures exact local execution commands and package versions. Its Git base commit refers to the original project workspace before the sandbox export; source SHA-256 hashes identify the corrected runtime files. To reproduce, use a fresh run directory and verify your local data checksums against the manifest. Source/config/data changes intentionally invalidate old runs.

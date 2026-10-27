@@ -1,5 +1,7 @@
 # Vridhi Chaudhary - module review register
 
+> Coordinator correction (2026-10-27, branch `kavya`): explanatory claims below were reconciled with the source code, measured tables and training profiles. Original agent/environment/check records remain historical self-reports; this edit does not certify student understanding.
+
 Package prepared: 2026-10-27. Role: Missing-data handling, chronological splits and features.
 Status: **integrated and agent-reviewed; member understanding/reproduction pending**. No individual implementation or completion is claimed.
 
@@ -23,7 +25,7 @@ Performed by an Antigravity agent (Gemini 3.8 Flash) run by Vridhi Chaudhary und
 ### Module summary (agent's description)
 
 - `src/trafficml/data/masking.py`:
-  Defines `NULL_VALUE = 0.0`. In METR-LA loop detectors, a reading of 0.0 mph indicates missing data or a detector outage rather than true zero speed. Provides `valid_mask(x, null_value=0.0)` returning a boolean mask where readings are finite and non-zero, and `to_nan(x, null_value=0.0)` converting missing readings to `np.nan` (as float32) so missing observations cannot silently masquerade as valid zero-speed traffic in downstream calculations.
+  Defines `NULL_VALUE = 0.0`. Under this benchmark policy, 0.0 mph is masked as a missing reading; this is not a universal physical rule about stopped traffic. Provides `valid_mask(x, null_value=0.0)` returning a boolean mask where readings are finite and non-zero, and `to_nan(x, null_value=0.0)` converting missing readings to `np.nan` (as float32) so missing observations cannot silently masquerade as valid zero-speed traffic in downstream calculations.
 - `src/trafficml/data/splits.py`:
   Implements `anchor_indices(num_steps, history=12, horizon=12)` returning valid anchor indices where both full past history and future horizon windows lie strictly within series bounds. Implements `chronological_split(num_steps, history=12, horizon=12, train_frac=0.7, test_frac=0.2)` producing a `Splits` dataclass (`train`, `val_tune`, `val_stack`, `test`). Crucially enforces chronological target purging: discards the last `horizon - 1` (11 steps = 55 minutes) anchors of train, val_tune, and val_stack (`gap = horizon - 1`). This ensures that the forecast targets of an earlier partition $k$ (which reach up to anchor + horizon) terminate on or before the first anchor of the subsequent partition $k+1$ ($t_{k,\text{last}} + \text{horizon} \le t_{k+1,\text{first}}$), eliminating future target leakage across splits. Also provides `make_windows` to slice 2D data `(T, N)` into causal 3D windows `(S, history, N)` and targets `(S, horizon, N)`, and `split_time_ranges` for split audit verification.
 - `src/trafficml/features/__init__.py`:
@@ -56,10 +58,10 @@ The historical 56-test result is not a new run. Full test execution of `test_fea
 
 ### Observations and open questions
 
-- Chronological boundary purging vs literature benchmarks: DCRNN's published benchmark code does not purge target horizons at partition boundaries, resulting in overlap where targets from the end of the train set extend into the validation window. Our `chronological_split` explicitly purges `horizon - 1` steps (55 minutes) at each boundary. This difference in evaluation protocol must be clearly disclosed when comparing test metrics against published DCRNN numbers.
+- Chronological boundary policy: our `chronological_split` purges `horizon - 1` anchors (11 five-minute steps for the configured horizon) at each boundary. Published benchmark scores must not be treated as equivalent-protocol comparisons without independently auditing their splits and masks.
 - Validation partition allocation: The validation set is partitioned 50/50 into `val_tune` (for hyperparameter tuning) and `val_stack` (provisional future stacking partition). As noted in code docstrings, this remains a prototype setting pending coordinator confirmation.
 - Cross-package coupling: `test_features.py` directly tests tree estimators (`trafficml.models.trees`) alongside features, and `test_splits.py` tests `fit_training_profile` from `run_baselines.py`. These tests verify end-to-end causal isolation and will execute cleanly once `04-bineet-models` is integrated.
-- Feature scaling: `SensorFeatures` outputs raw unscaled features. Tree-based models (Random Forest and XGBoost) are invariant to monotonic transformations, but if linear or neural baselines are introduced in Phase 2, z-score scaling computed strictly on training splits will be required.
+- Feature scaling: current tree models use raw unscaled features. Scaling for any future model is a model-specific decision; if fitted, scaler statistics must use training data only. No future z-score requirement or exact invariance of approximate histogram implementations is asserted.
 
 ## Actual member activity (complete only after performing it)
 

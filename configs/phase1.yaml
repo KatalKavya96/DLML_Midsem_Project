@@ -1,0 +1,11 @@
+# Budgeted, predeclared search. Select on val_tune only; test remains exploratory.
+seed: 42
+train_stride: 2
+pilot_sensors: 6
+minimum_training_rows: 100
+rf_candidates:
+  - {n_estimators: 48, max_depth: 12, min_samples_leaf: 8, max_features: 0.8}
+  - {n_estimators: 64, max_depth: 16, min_samples_leaf: 5, max_features: 0.8}
+xgb_candidates:
+  - {n_estimators: 100, max_depth: 3, learning_rate: 0.08, min_child_weight: 10, subsample: 0.8, colsample_bytree: 0.9, objective: 'reg:squarederror'}
+  - {n_estimators: 140, max_depth: 3, learning_rate: 0.06, min_child_weight: 10, subsample: 0.8, colsample_bytree: 0.9, objective: 'reg:absoluteerror'}

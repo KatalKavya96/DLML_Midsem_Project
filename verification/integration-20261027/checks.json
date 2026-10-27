@@ -1,0 +1,29 @@
+{
+  "date": "2026-10-27",
+  "branch": "kavya",
+  "tested_source_revision": "212ebcd4833a4261102863fb0795b23f9ccd893d",
+  "team_base": "f1ca84f6c40a79c88a3c9a689daf7a01bf35b29c",
+  "environment": "Existing isolated Python 3.12.14 dependencies reused; no fresh dependency download claimed",
+  "full_local_tests": {
+    "passed": 56,
+    "skipped": 0
+  },
+  "clean_tracked_source_tests": {
+    "passed": 54,
+    "skipped": 2,
+    "skip_reason": "Raw sensor-graph/data files intentionally excluded"
+  },
+  "lint": "passed",
+  "format": "37 files passed",
+  "runtime_dependency_check": "52 installed packages compatible",
+  "eight_cli_help_entrypoints": "passed",
+  "built_wheel_import": "passed",
+  "frozen_run_source_fingerprints": "unchanged and matched in clean export",
+  "data_and_models_bundled": false,
+  "remote_ci": "not run before branch publication",
+  "ieee_source_compilation": "success",
+  "final_pdf_export_review": "pending",
+  "final_presentation_package": "11 slides and 3 native charts; CRC/XML valid; previous visual inspection only",
+  "new_model_training": false,
+  "scores_changed": false
+}
