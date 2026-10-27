@@ -1,2 +1,27 @@
-# Reserved for future project metadata and dependency declarations.
-# Runtime, build system, and dependencies have not been selected.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "trafficml"
+version = "0.1.0"
+description = "T072 Project 4: traffic speed forecasting on METR-LA (Phase 1: ML baselines)"
+requires-python = ">=3.12,<3.13"
+dependencies = ["numpy==2.3.5", "pandas==2.2.3", "scipy==1.16.3", "tables==3.10.2", "PyYAML==6.0.3", "scikit-learn==1.7.2", "xgboost==3.1.1", "matplotlib==3.10.7"]
+
+[project.optional-dependencies]
+dev = ["pytest==8.4.2", "ruff==0.14.2"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src", "scripts"]
+testpaths = ["tests"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "NPY"]
