@@ -1,12 +1,20 @@
 # Phase 1 traffic speed forecasting — Team T072
 
-> Integration status: the four member modules have merged into `main`; branch `kavya` adds the remaining runtime, environment, verification and academic artifacts. Review this branch through a PR; do not commit directly to `main`. No `integration/phase1-handoff` branch is required. See [current state](PROJECT_STATE.md) and [requirements mapping](docs/02_requirements_traceability.md).
+> Integration status: member PRs #2–#6 are merged into `main`. The owner-authorized `kavya` branch adds the selected report and presentation for review. No direct-main commit or push is used. See [current state](PROJECT_STATE.md).
 
 Canonical repository: `KatalKavya96/DLML_Midsem_Project`. The implementation lives directly at this repository root (`src/trafficml`, `scripts`, `tests`, `configs`). There is no nested `AML/` project. Delivery ZIPs, old scaffolding and private build files were moved to the separate sibling `DLML_Project_Archive_2026-10-27` folder. Read [current state](PROJECT_STATE.md), [team roster](PROJECT.md) and [handoff instructions](docs/handoffs/HANDOFF.md).
 
 A local, end-to-end forecasting study using **Persistence, Historical Average, Random Forest and XGBoost** on the existing METR-LA files. No neural networks, graph-neighbour features, UI or traffic-signal controller are included. The broader faculty title/LWR scope remains to be reconciled; do not present forecasting results as traffic-control benefits.
 
 Read [the methods/viva guide](docs/METHODS_AND_VIVA.md), [literature synthesis](docs/LITERATURE.md), and [contribution disclosure](docs/CONTRIBUTIONS.md). The integrated implementation was prepared with substantial AI assistance; names/commits are not evidence of individual implementation.
+
+## Report and presentation
+
+- [Report PDF](report/final/Traffic_Speed_Forecasting_T072.pdf)
+- [PowerPoint](slides/final/Traffic_Speed_Forecasting_T072.pptx)
+- [Presentation PDF](slides/final/Traffic_Speed_Forecasting_T072.pdf)
+
+These are the owner's supplied files, preserved unchanged. **The presentation's RMSE columns and pilot-candidate labels need correction against the saved evidence.** See [import checks, correct values and provenance](docs/final_deliverables.md). Existing sources and generated experiment evidence are preserved.
 
 ## Setup
 

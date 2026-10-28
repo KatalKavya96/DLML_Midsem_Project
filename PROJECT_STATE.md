@@ -1,10 +1,12 @@
 # Project state
 
-Updated: 2026-10-27, Asia/Kolkata. Team T072, Section C.
+Updated: 2026-10-28, Asia/Kolkata. Team T072, Section C.
 
 ## Current branch and integration
 
-The owner requested the exact branch **kavya**, using Kavya Katal's configured Git identity with no co-author trailer. It starts from canonical origin/main **f1ca84f6c40a79c88a3c9a689daf7a01bf35b29c**, containing the merged data (#2), feature/split (#3), EDA (#4) and model/error-analysis (#5) PRs. Local main was fast-forwarded to that same base; all new integration commits belong on kavya. No direct-main commit, PR merge or branch publication is performed by this local preparation.
+PRs #2–#6 are merged in canonical `main` at `b717675973aa32f966d7d38f177d08087013177c`. The owner authorized uploading the selected final report and presentation on 2026-10-28. Branch `kavya` was fast-forwarded to that main base before adding the three supplied binary artifacts and their documentation. New commits use Kavya Katal's configured identity without a co-author trailer. Publication is to the personal branch for review; no direct-main commit, direct-main push or merge is performed.
+
+The supplied report has 17 pages, and the supplied presentation/PDF export have 8 slides/pages. Their original bytes are preserved under `report/final/` and `slides/final/`. The presentation's RMSE table and pilot-candidate labels disagree with the frozen evidence; see [correct values and import checks](docs/final_deliverables.md). Do not mark these numerical issues or final-submission acceptance resolved. Existing sources, generated results/provenance and contribution history are preserved.
 
 The canonical project is this repository ROOT: src/trafficml/, scripts/, tests/, configs/, report/, slides/ and verification/. There is no nested AML/. Original Downloads/AML is unchanged. Delivery ZIPs/extractions, historical placeholders, unused data and private build files remain in the separate sibling DLML_Project_Archive_2026-10-27 archive; they are not submitted.
 
@@ -14,7 +16,7 @@ Package 05 supplies the remaining pinned environment, model config, training/eva
 
 The study compares persistence, historical average, independent-sensor multi-output RF and direct-horizon XGBoost with 38 causal features, bounded validation-only tuning, training stride 2, purged chronology, common masked targets, EDA/error analysis and saved-model inference. No GAT, calibrated LWR, UI, stacking or traffic-signal simulation is implemented. Phase 2 remains deferred; any future control is simulated only.
 
-## Actual verification
+## Recorded implementation verification — 2026-10-27
 
 Full real-data suite: 56 passed without skips. Ruff lint/format passed for 37 Python files; uv checked 52 compatible installed packages. A wheel built offline with setuptools. The existing uv-created verification environment has no pip module, so the initial pip check/build attempts failed; alternative actual checks succeeded.
 
