@@ -2,6 +2,7 @@
 
 The implemented Phase 1 project lives at the repository root. Initial placeholder research documents are preserved in the separate sibling archive, not presented as completed requirements mapping.
 
+- [Owner-supplied report/presentation and content discrepancies](final_deliverables.md)
 - [Current project state](../PROJECT_STATE.md)
 - [Requirements/evidence mapping](02_requirements_traceability.md)
 - [Dataset card](DATASET_CARD.md)
